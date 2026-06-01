@@ -32,11 +32,17 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Prepare standalone artifact
+      - name: Prepare deployment artifact
         run: |
-          mkdir -p release/.next
-          cp -R .next/standalone/* release/
-          cp -R .next/static release/.next/static
+          mkdir -p release
+          cp package.json release/package.json
+          cp next.config.mjs release/next.config.mjs
+          cp next-env.d.ts release/next-env.d.ts
+          cp postcss.config.js release/postcss.config.js
+          cp tailwind.config.ts release/tailwind.config.ts
+          cp tsconfig.json release/tsconfig.json
+          cp -R src release/src
+          cp -R prisma release/prisma
           if [ -d public ]; then cp -R public release/public; fi
 
       - name: Upload artifact for deployment job
