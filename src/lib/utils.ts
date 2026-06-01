@@ -5,7 +5,10 @@ export function cn(...inputs: Array<string | false | null | undefined>) {
   return clsx(inputs);
 }
 
-export function formatCurrency(value: number | string, currency = "USD") {
+export function formatCurrency(
+  value: number | string | { toString(): string },
+  currency = "USD"
+) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency

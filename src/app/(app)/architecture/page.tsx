@@ -11,8 +11,8 @@ export default function ArchitecturePage() {
         <Card>
           <h2 className="mb-3 text-xl font-semibold">Primary Flow</h2>
           <div className="space-y-2 text-sm text-slate">
-            <p>User -> Azure App Service -> Next.js route handler -> PostgreSQL Flexible Server</p>
-            <p>User -> Azure App Service -> Next.js route handler -> Azure Blob Storage</p>
+            <p>User {"->"} Azure App Service {"->"} Next.js route handler {"->"} PostgreSQL Flexible Server</p>
+            <p>User {"->"} Azure App Service {"->"} Next.js route handler {"->"} Azure Blob Storage</p>
             <p>App Service uses Managed Identity and RBAC to upload receipts and audit JSON without public blob access.</p>
           </div>
         </Card>

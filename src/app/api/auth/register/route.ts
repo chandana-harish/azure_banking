@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       email: user.email
     });
 
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url), 303);
   } catch (error) {
     const message =
       error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"
@@ -30,6 +30,6 @@ export async function POST(request: NextRequest) {
         : error instanceof Error
           ? error.message
           : "Unable to register.";
-    return NextResponse.redirect(new URL(`/register?error=${encodeURIComponent(message)}`, request.url));
+    return NextResponse.redirect(new URL(`/register?error=${encodeURIComponent(message)}`, request.url), 303);
   }
 }

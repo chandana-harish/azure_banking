@@ -1,13 +1,13 @@
-import { Decimal, DocumentType, Prisma, TransactionType, UserRole } from "@prisma/client";
+import { DocumentType, Prisma, TransactionType, UserRole } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { buildAuditRecord } from "@/lib/audit";
 import { uploadBlob } from "@/lib/blob";
-import { env } from "@/lib/env";
+import { getEnv } from "@/lib/env";
 import { log } from "@/lib/logger";
 import { buildReceiptPdf } from "@/lib/receipt";
 import { buildReference, buildRequestId } from "@/lib/utils";
 
-function decimalToNumber(value: Decimal | Prisma.Decimal | number | string) {
+function decimalToNumber(value: Prisma.Decimal | number | string) {
   return Number(value);
 }
 
@@ -134,6 +134,7 @@ export async function getCustomerAccount(userId: string) {
 }
 
 export async function createTransaction(userId: string, type: TransactionType, amount: number, description?: string) {
+  const env = getEnv();
   const { customer, account, user } = await getCustomerAccount(userId);
   const requestId = buildRequestId();
   const reference = buildReference(type === TransactionType.DEPOSIT ? "DEP" : "WDL");

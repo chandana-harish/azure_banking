@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { UserRole } from "@prisma/client";
 import { generateReadUrl } from "@/lib/blob";
 import { requireSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -19,7 +20,7 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
   }
 
   const isOwner = doc.customer.userId === session.sub;
-  if (!isOwner && session.role !== "ADMIN") {
+  if (!isOwner && session.role !== UserRole.ADMIN) {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
