@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
       email: user.email
     });
 
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url), 303);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to login.";
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, request.url));
+    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(message)}`, request.url), 303);
   }
 }
