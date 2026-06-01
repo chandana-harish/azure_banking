@@ -43,6 +43,7 @@ jobs:
           cp tsconfig.json release/tsconfig.json
           cp -R src release/src
           cp -R prisma release/prisma
+          cp -R scripts release/scripts
           if [ -d public ]; then cp -R public release/public; fi
 
       - name: Upload artifact for deployment job
