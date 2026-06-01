@@ -82,7 +82,7 @@ docs/                    Azure architecture and deployment documentation
 6. App stores blob metadata, path, URL, version ID, and checksum in PostgreSQL.
 7. User or admin downloads the file through a short-lived, secure read URL.
 
-## Documentation
+## Documentations
 
 - [Architecture Guide](docs/architecture.md)
 - [Azure Portal Deployment Guide](docs/azure-portal-guide.md)
