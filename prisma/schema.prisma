@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum DocumentType {
+  RECEIPT_PDF
+  AUDIT_JSON
+  STATEMENT
+  KYC
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         UserRole  @default(CUSTOMER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  customer     Customer?
+}
+
+model Customer {
+  id           String        @id @default(cuid())
+  userId       String        @unique
+  fullName     String
+  customerNo   String        @unique
+  phone        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accounts     Account[]
+  transactions Transaction[]
+  blobs        BlobDocument[]
+  audits       AuditRecord[]
+}
+
+model Account {
+  id              String        @id @default(cuid())
+  customerId      String
+  accountNumber   String        @unique
+  accountType     String        @default("Checking")
+  currency        String        @default("USD")
+  availableBalance Decimal      @db.Decimal(18, 2)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  transactions    Transaction[]
+  blobs           BlobDocument[]
+  audits          AuditRecord[]
+}
+
+model Transaction {
+  id               String           @id @default(cuid())
+  accountId        String
+  customerId       String
+  type             TransactionType
+  amount           Decimal          @db.Decimal(18, 2)
+  balanceBefore    Decimal          @db.Decimal(18, 2)
+  balanceAfter     Decimal          @db.Decimal(18, 2)
+  description      String?
+  reference        String           @unique
+  createdAt        DateTime         @default(now())
+  account          Account          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  customer         Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  blobDocuments    BlobDocument[]
+  auditRecords     AuditRecord[]
+}
+
+model BlobDocument {
+  id              String       @id @default(cuid())
+  customerId      String
+  accountId       String
+  transactionId   String?
+  documentType    DocumentType
+  containerName   String
+  blobPath        String
+  blobUrl         String
+  versionId       String?
+  checksum        String?
+  metadata        Json
+  uploadedAt      DateTime     @default(now())
+  customer        Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  account         Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  transaction     Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+}
+
+model AuditRecord {
+  id               String       @id @default(cuid())
+  customerId       String
+  accountId        String
+  transactionId    String?
+  containerName    String
+  blobPath         String
+  blobUrl          String
+  versionId        String?
+  eventType        String
+  payload          Json
+  createdAt        DateTime     @default(now())
+  customer         Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  account          Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  transaction      Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+}
