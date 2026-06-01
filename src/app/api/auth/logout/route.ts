@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { destroySession } from "@/lib/auth";
+import { getRequiredEnv } from "@/lib/env";
 
-export async function POST(request: Request) {
+export async function POST() {
   destroySession();
-  return NextResponse.redirect(new URL("/login", request.url), 303);
+  return NextResponse.redirect(new URL("/login", getRequiredEnv("APP_URL")), 303);
 }
